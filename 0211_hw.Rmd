@@ -1,0 +1,277 @@
+---
+title: "0211_hw"
+author: "mjng"
+date: '2022 2 11 '
+output: html_document
+---
+
+## 문제1
+<br>
+약수의 개수 구하기
+```{r}
+div_count = function(n) {
+  num = 1:n
+  count = length(num[n %% num == 0])
+  return(count)
+}
+
+div_count(12)
+```
+<br>
+소수의 개수 구하기
+```{r}
+prime_count = function(n) {
+  num=1:n
+  count = sum(ifelse(sapply(num, div_count) == 2, 1, 0))
+  return(count)
+}
+
+prime_count(10)
+```
+<br><br><br>
+## 문제2
+<br>
+mtcars 데이터셋 구조 확인
+```{r mtcars}
+str(mtcars)
+```
+<br>
+mtcars 데이터셋 요약정보 확인
+```{r}
+summary(mtcars)
+```
+<br>
+gear의 개수가 4인 자동차모델의 열 정보
+```{r}
+subset(mtcars, gear == 4)
+```
+<br>
+gear의 개수가 4인 자동차모델의 mpg, cyl, hp, wt 열 정보
+```{r}
+subset(mtcars, gear == 4, select=c(mpg, cyl, hp, wt))
+```
+<br>
+mpg가 가장 낮은 자동차모델의 열정보
+```{r}
+subset(mtcars, mpg == min(mpg))
+```
+<br>
+mpg가 가장 낮은 자동차모델의 mpg, cyl, hp, wt 열 정보
+```{r}
+subset(mtcars, mpg == min(mpg), select=c(mpg, cyl, hp, wt))
+```
+<br>
+mpg의 평균, 분산, 표준편차
+```{r}
+mean(mtcars$mpg)
+var(mtcars$mpg)
+sd(mtcars$mpg)
+```
+<br>
+mpg가 median보다 큰 모델들의 평균, 표준편차
+```{r}
+mean(mtcars$mpg > median(mtcars$mpg))
+sd(mtcars$mpg > median(mtcars$mpg))
+```
+<br>
+mpg 히스토그램
+```{r}
+hist(mtcars$mpg, breaks=25)
+```
+<br>
+gear의 개수에 따른 빈도수를 나타내는 바플롯
+```{r}
+gear_tab = table(mtcars$gear)
+barplot(gear_tab, main='기어 개수 별 자동차 모델 수', xlab='num of gear', ylab='num of models')
+```
+<br>
+mpg와 wt와의 관계를 나타내는 산점도
+```{r}
+mpg_wt_tab = table(mtcars$mpg, mtcars$wt)
+plot(mtcars$mpg, mtcars$wt)
+```
+<br><br><br>
+## 문제 3
+<br>
+state.x77 조사
+```{r}
+?state.x77
+```
+<br>
+state.x77 DF 분석
+```{r}
+st<-as.data.frame(state.x77)
+st
+```
+<br>
+state.x77 기술적 통계량 분석
+```{r}
+summary(st)
+```
+<br>
+state.x77 변수별 확률분포 시각화
+```{r}
+hist(st$Population, breaks=30)
+hist(st$Income, breaks=30)
+hist(st$Illiteracy, breaks=30)
+hist(st$`Life Exp`, breaks=30)
+hist(st$Murder, breaks=30)
+hist(st$`HS Grad`, breaks=30)
+hist(st$Frost, breaks=30)
+hist(st$Area, breaks=30)
+```
+<br>
+state.x77  변수 간 관계 시각화
+```{r}
+pairs(st, main='state.x77')
+```
+<br>
+state.x77 통계적 분석
+```{r}
+cor(st)
+```
+Murder과 Life Exp의 상관계수가 -0.78084575로 가장 높고 음의 상관관계를 지님
+<br><br><br>
+##문제 4
+<br>
+###5단원 연습문제 1   <br>
+이산확률변수 X    <br>
+X=[-2, -1, 0, 1, 2]   <br>
+P(X=x)=[0.15, 0.25, NULL, 0.25, 0.30]   <br>
+```{r}
+x=seq(-2, 2, 1)
+y=c(0.15, 0.25, 0, 0.25, 0.30) #NULL을 입력하면 무시해서 0을 넣어둠
+```
+
+1-1) P[X=0]
+```{r}
+y[3]=1-sum(y)
+y[3]
+#
+```
+
+1-2) 평균 mu, 분산 (sigma)^2
+```{r}
+mean = sum(x*y)
+var=sum(x*x*y)-mean^2
+mean
+var
+```
+<br>
+###5단원 연습문제 2   <br>
+X~B(8, 0.45)    <br>
+2-1) P(X=4)   <br>
+2-2) P(X!=3)    <br>
+2-3) P(X<=5)    <br>
+2-4) P(X>=6)    <br>
+2-5) 평균 mu    <br>
+2-6) 분산 (sigma)^2   <br>
+2-7) P(mu-sigma <= X <= mu+sigma)   <br>
+2-8) P(mu-2* sigma <= X <= mu+2* sigma)   <br>
+```{r}
+dbinom(4, 8, 0.45)
+
+1-dbinom(3, 8, 0.45)
+
+pbinom(5, 8, 0.45)
+
+pbinom(6, 8, 0.45, lower.tail = F)
+
+mean = 8*0.45
+mean
+
+var = 8*0.45*(1-0.45)
+var
+
+sd = sqrt(var)
+pbinom(mean+sd, 8, 0.45) - pbinom(mean-sd, 8, 0.45)
+
+pbinom(mean+2*sd, 8, 0.45) - pbinom(mean-2*sd, 8, 0.45)
+```
+<br>
+###6단원 연습문제 1   <br>
+Z~N(0,1) (표준정규확률변수)   <br>
+1-1) P(Z>=2.05)   <br>
+1-2) P(Z<1.11)    <br>
+1-3) P(Z>=2.5)    <br>
+1-4) P(-1.02<= Z<=1.02)   <br>
+```{r}
+pnorm(2.05, 0, 1, lower.tail = F)
+pnorm(1.11, 0, 1)
+pnorm(-1.27, 0, 1, lower.tail=F)
+pnorm(1.02, 0, 1) - pnorm(-1.02, 0, 1)
+```
+<br>
+###6단원 연습문제 2   <br>
+X~N(5, 4)   <br>
+2-1) P(X>=4.5)    <br>
+2-2) P(X<6.5)   <br>
+2-3) P(X<=2.5)    <br>
+2-4) P(3<=X<=7)   <br>
+```{r}
+pnorm(4.5, 5, 2, lower.tail = F)
+pnorm(6.5, 5, 2)
+pnorm(2.5, 5, 2)
+pnorm(7, 5, 2) - pnorm(3, 5, 2)
+```
+<br><br><br>
+##문제 5
+<br>
+###7단원 연습문제 3   <br>
+모평균 mu=50, 표본의크기 n=25   <br>
+표본평균이 49에서 52 사이일 확률    <br>
+3-1) 모표준편차 sigma = 4   <br>
+3-1) 모표준편차 sigma = 9   <br>
+3-1) 모표준편차 sigma = 12    <br>
+```{r}
+#표본표준평균 = sigma/sqrt(n)
+pnorm(52, 50, 4/5) - pnorm(49, 50, 4/5)
+pnorm(52, 50, 9/5) - pnorm(49, 50, 9/5)
+pnorm(52, 50, 12/5) - pnorm(49, 50, 12/5)
+```
+<br>
+###7단원 연습문제 4   <br>
+모평균 mu=50, 모표준편차 sigma=5    <br>
+4-1) 표본의크기 n = 16    <br>
+4-2) 표본의크기 n = 49    <br>
+4-3) 표본의크기 n = 64    <br>
+```{r}
+#표본표준평균 = sigma/sqrt(n)
+pnorm(51, 50, 5/4) - pnorm(49, 50, 5/4)
+pnorm(51, 50, 5/7) - pnorm(49, 50, 5/7)
+pnorm(51, 50, 5/8) - pnorm(49, 50, 5/8)
+```
+<br>
+###8단원 연습문제 1   <br>
+모분산이 다음과 같은 정규모집단의 모평균에 대한 95% 신뢰도를 갖는 구간을 추정하기 위하여 크기가 50인 표본 선정, 이때 오차한계는?    <br>
+1-1) (sigma)^2 = 5    <br>
+1-2) (sigma)^2 = 15   <br>
+1-3) (sigma)^2 = 25   <br>
+1-4) (sigma)^2 = 35   <br>
+```{r}
+#신뢰수준 95%에서의 오차한계 = 1.96*sigma*sqrt(n)
+1.96*sqrt(5/50)
+1.96*sqrt(15/50)
+1.96*sqrt(25/50)
+1.96*sqrt(35/50)
+```
+<br>
+###8단원 연습문제 2   <br>
+모분산이 4인 정규모집단의 모평균에 대한 95% 신뢰도를 갖는 구간을 추정하기 위하여 크기가 n인 표본 선정, 이때 오차한계는?   <br>
+2-1) n=50   <br>
+2-2) n=100    <br>
+2-3) n=200    <br>
+2-4) n=500    <br>
+```{r}
+#신뢰수준 95%에서의 오차한계 = 1.96*sigma*sqrt(n)
+1.96*sqrt(4/50)
+1.96*sqrt(4/100)
+1.96*sqrt(4/200)
+1.96*sqrt(4/500)
+```
+
+
+
+
+
+
